@@ -1,7 +1,6 @@
 import base64
 from blake3 import blake3
 import jcs
-import json
 import re
 
 
@@ -96,81 +95,3 @@ class OCAProcessor:
         }
         capture_base["overlays"].append(branding)
         return [capture_base]
-
-    def create_bundle(self, credential_registration, credential_template):
-        capture_base = {
-            "type": "spec/capture_base/1.0",
-            "attributes": {},
-            "flagged_attributes": [],
-            "digest": self.dummy_string,
-        }
-        labels = {
-            "type": "spec/overlays/label/1.0",
-            "lang": "en",
-            "attribute_labels": {},
-        }
-        information = {
-            "type": "spec/overlays/information/1.0",
-            "lang": "en",
-            "attribute_information": {},
-        }
-        meta = {
-            "type": "spec/overlays/meta/1.0",
-            "language": "en",
-            "issuer": credential_template["issuer"]["name"],
-            "name": credential_template["name"],
-            # "description": credential_template['description'],
-        }
-
-        branding = {
-            "type": "aries/overlays/branding/1.0",
-            "primary_attribute": "entityId",
-            "secondary_attribute": "cardinalityId",
-            "primary_background_color": "#003366",
-            "secondary_background_color": "#00264D",
-            "logo": "https://avatars.githubusercontent.com/u/916280",
-        }
-        paths = {"type": "vc/overlays/path/1.0", "attribute_paths": {}}
-        clusters = {
-            "type": "vc/overlays/cluster/1.0",
-            "lang": "en",
-            "attribute_clusters": {},
-        }
-        attributes = (
-            credential_registration["corePaths"]
-            | credential_registration["subjectPaths"]
-        )
-        for attribute in attributes:
-            capture_base["attributes"][attribute] = "Text"
-            labels["attribute_labels"][attribute] = " ".join(
-                re.findall("[A-Z][^A-Z]*", attribute)
-            ).upper()
-            paths["attribute_paths"][attribute] = attributes[attribute]
-
-        overlays = [
-            labels,
-            # information,
-            meta,
-            branding,
-            paths,
-            # clusters,
-        ]
-
-        capture_base["digest"] = self.generate_said(capture_base)
-        for idx, overlay in enumerate(overlays):
-            overlays[idx]["capture_base"] = capture_base["digest"]
-            overlays[idx]["digest"] = self.dummy_string
-            overlays[idx]["digest"] = self.generate_said(overlays[idx])
-
-        bundle = capture_base | {"overlays": overlays}
-        return bundle
-
-    def get_overlay(self, bundle, overlay_type):
-        return next(
-            (
-                overlay
-                for overlay in bundle["overlays"]
-                if overlay["type"] == overlay_type
-            ),
-            None,
-        )
