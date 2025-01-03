@@ -1,7 +1,7 @@
 
 from typer.testing import CliRunner
 
-from oca.processor import OCAProcessor
+from oca_cli.processor import OCAProcessor
 
 runner = CliRunner()
 

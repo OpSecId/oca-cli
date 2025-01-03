@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "oca"
+name = "oca-cli"
 version = "0.1.0"
 description = "OCA Bundle management simplified."
 authors = ["pstlouis <patrick.st-louis@opsecid.ca>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-oca = "oca.main:cli"
+oca = "oca_cli.main:cli"
 
 [tool.poetry.dependencies]
 python = "^3.12"

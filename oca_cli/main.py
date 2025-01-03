@@ -1,7 +1,7 @@
 import typer
 import json
 from typing_extensions import Annotated
-from oca.processor import OCAProcessor
+from oca_cli.processor import OCAProcessor
 
 cli = typer.Typer()
 
