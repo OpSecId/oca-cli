@@ -1,7 +1,6 @@
 import base64
 from blake3 import blake3
 import jcs
-import re
 
 
 class OCAProcessorError(Exception):
